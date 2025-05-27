@@ -52,15 +52,30 @@
         <!-- Введення назви та автора -->
         <StackPanel Orientation="Horizontal">
             <StackPanel Orientation="Vertical" Margin="5">
-                <TextBox x:Name="TitleInput" Margin="0, 0, 0, 5" FontSize="24" Width="600" Height="40" Style="{StaticResource PlaceholderTextBox}" Tag="Input title..."/>
-                <TextBox x:Name="AuthorInput" FontSize="24" Width="600" Height="40" Style="{StaticResource PlaceholderTextBox}" Tag="Input author..."/>
+                <TextBox Text="{Binding TitleInput, UpdateSourceTrigger=PropertyChanged}" Margin="0, 0, 0, 5" FontSize="24" Width="600" Height="40" Style="{StaticResource PlaceholderTextBox}" Tag="Input title..."/>
+                <TextBox Text="{Binding AuthorInput, UpdateSourceTrigger=PropertyChanged}" FontSize="24" Width="600" Height="40" Style="{StaticResource PlaceholderTextBox}" Tag="Input author..."/>
             </StackPanel>
-            <Button Content="Додати" Width="180" Height="50" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="16" Click="AddButton_Click"/>
+            <Button Content="Додати" Width="180" Height="50" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="16" Command="{Binding AddBookCommand}"/>
         </StackPanel>
 
         <!-- Список книг -->
         <ListView x:Name="BooksList" Grid.Row="1" Height="275" Margin="0,0,0,10"
               ItemsSource="{Binding Books}" AlternationCount="10000" SelectedItem="{Binding SelectedBook, Mode=TwoWay}" FontSize="16">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsRead}" Value="True">
+                            <Setter Property="Background" Value="#C8FACC"/>
+                            <!-- світло-зелений -->
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsRead}" Value="False">
+                            <Setter Property="Background" Value="#FFD6D6"/>
+                            <!-- світло-червоний -->
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="50" Header="№" DisplayMemberBinding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=(ItemsControl.AlternationIndex), Converter={StaticResource IndexPlusOneConverter}}"/>
@@ -74,10 +89,10 @@
 
         <!-- Кнопки -->
         <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0,10,0,0" HorizontalAlignment="Center">
-            <Button Content="Позначити прочитаною" Margin="0,0,10,0" FontSize="16" Click="MarkAsReadButton_Click"/>
-            <Button Content="Видалити" Margin="0,0,10,0" FontSize="16" Click="DeleteButton_Click"/>
-            <Button Content="Зберегти" Margin="0,0,10,0" FontSize="16" HorizontalAlignment="Right" Click="SaveButton_Click"/>
-            <Button Content="Завантажити" FontSize="16" Click="LoadButton_Click"/>
+            <Button Content="Позначити прочитаною" Margin="0,0,10,0" FontSize="16" Command="{Binding MarkAsReadCommand}"/>
+            <Button Content="Видалити" Margin="0,0,10,0" FontSize="16" Command="{Binding RemoveBookCommand}"/>
+            <Button Content="Зберегти" Margin="0,0,10,0" FontSize="16" HorizontalAlignment="Right" Command="{Binding SaveCommand}"/>
+            <Button Content="Завантажити" FontSize="16" Command="{Binding LoadCommand}"/>
         </StackPanel>
     </Grid>
 </Window>
