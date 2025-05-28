@@ -23,6 +23,7 @@ namespace BookTracker.ViewModels
         private string authorInput = string.Empty;
         private Book? selectedBook;
         private readonly string filePath = "books.json";
+        private readonly IDialogService dialogService;
 
         public string TitleInput
         {
@@ -58,8 +59,9 @@ namespace BookTracker.ViewModels
         public ICommand SaveCommand { get; }
         public ICommand LoadCommand { get; }
 
-        public MainViewModel()
+        public MainViewModel(IDialogService dialogService)
         {
+            this.dialogService = dialogService;
             AddBookCommand = new RelayCommand(_ => AddBook());
             MarkAsReadCommand = new RelayCommand(_ => MarkAsRead(), _ => SelectedBook != null);
             RemoveBookCommand = new RelayCommand(_ => RemoveBook(), _ => SelectedBook != null);
@@ -82,16 +84,13 @@ namespace BookTracker.ViewModels
         {
             if (SelectedBook != null)
             {
-                var reviewWindow = new ReviewWindow()
-                {
-                    Owner = Application.Current.MainWindow,
-                };
+                var result = dialogService.ShowReviewDialog();
 
-                if (reviewWindow.ShowDialog() == true && reviewWindow.SelectedRating is int rate)
+                if (result is (int rating, string review))
                 {
-                    selectedBook.Rate = rate;
-                    SelectedBook.Review = reviewWindow.ReviewText;
-                    bookService.MarkAsRead(selectedBook);
+                    SelectedBook.Rate = rating;
+                    SelectedBook.Review = review;
+                    bookService.MarkAsRead(SelectedBook);
                 }
             }
         }
