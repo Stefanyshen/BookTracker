@@ -1,30 +1,27 @@
 ﻿using BookTracker.Commands;
 using BookTracker.Models;
 using BookTracker.Services;
-using BookTracker.Views;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace BookTracker.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private BookService bookService = new();
-        public ObservableCollection<Book> Books => bookService.Books;
-
+        private readonly string filePath = "books.json";
+        private readonly IDialogService dialogService;
+        private readonly BookService bookService = new();
         private string titleInput = string.Empty;
         private string authorInput = string.Empty;
         private Book? selectedBook;
-        private readonly string filePath = "books.json";
-        private readonly IDialogService dialogService;
 
+        private string statusFilter = "Всі";
+        private int? minRateFilter = null;
+
+        public ICollectionView FilteredBooks { get; }
+        public ObservableCollection<Book> Books => bookService.Books;
         public string TitleInput
         {
             get => titleInput;
@@ -52,6 +49,26 @@ namespace BookTracker.ViewModels
                 OnPropertyChanged(nameof(SelectedBook));
             }
         }
+        public string StatusFilter
+        {
+            get => statusFilter;
+            set
+            {
+                statusFilter = value;
+                OnPropertyChanged(nameof(StatusFilter));
+                FilteredBooks.Refresh();
+            }
+        }
+        public int? MinRateFilter
+        {
+            get => minRateFilter;
+            set
+            {
+                minRateFilter = value;
+                OnPropertyChanged(nameof(MinRateFilter));
+                FilteredBooks.Refresh();
+            }
+        }
 
         public ICommand AddBookCommand { get; }
         public ICommand MarkAsReadCommand { get; }
@@ -61,6 +78,8 @@ namespace BookTracker.ViewModels
 
         public MainViewModel(IDialogService dialogService)
         {
+            FilteredBooks = CollectionViewSource.GetDefaultView(bookService.Books);
+            FilteredBooks.Filter = FilterBooks;
             this.dialogService = dialogService;
             AddBookCommand = new RelayCommand(_ => AddBook());
             MarkAsReadCommand = new RelayCommand(_ => MarkAsRead(), _ => SelectedBook != null);
@@ -104,5 +123,18 @@ namespace BookTracker.ViewModels
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+
+        private bool FilterBooks(object obj)
+        {
+            if (obj is not Book book) 
+                return false;
+            if ((StatusFilter == "Прочитано" && !book.IsRead) || (StatusFilter == "Не прочитано" && book.IsRead))
+                return false;
+            if (minRateFilter.HasValue && (book.Rate ?? 0) < minRateFilter.Value) 
+                return false;
+
+            return true;
+        }
     }
 }

@@ -60,7 +60,7 @@
 
         <!-- Список книг -->
         <ListView x:Name="BooksList" Grid.Row="1" Height="275" Margin="0,0,0,10"
-              ItemsSource="{Binding Books}" AlternationCount="10000" SelectedItem="{Binding SelectedBook, Mode=TwoWay}" FontSize="16">
+              ItemsSource="{Binding FilteredBooks}" AlternationCount="10000" SelectedItem="{Binding SelectedBook, Mode=TwoWay}" FontSize="16">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Style.Triggers>
@@ -81,8 +81,37 @@
                     <GridViewColumn Width="50" Header="№" DisplayMemberBinding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=(ItemsControl.AlternationIndex), Converter={StaticResource IndexPlusOneConverter}}"/>
                     <GridViewColumn Width="350" Header="Назва" DisplayMemberBinding="{Binding Title}"/>
                     <GridViewColumn Width="200" Header="Автор" DisplayMemberBinding="{Binding Author}"/>
-                    <GridViewColumn Width="125" Header="Статус" DisplayMemberBinding="{Binding IsRead, Converter={StaticResource BoolToStatusConverter}}"/>
-                    <GridViewColumn Width="75" Header="Оцінка" DisplayMemberBinding="{Binding Rate}"/>
+
+                    <GridViewColumn Width="125">
+                        <GridViewColumn.Header>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="Статус" HorizontalAlignment="Center"/>
+                                <ComboBox SelectedItem="{Binding StatusFilter, Mode=TwoWay}" Width="120" HorizontalAlignment="Center">
+                                    <ComboBox.Items>
+                                        <sys:String xmlns:sys="clr-namespace:System;assembly=mscorlib">Всі</sys:String>
+                                        <sys:String xmlns:sys="clr-namespace:System;assembly=mscorlib">Прочитано</sys:String>
+                                        <sys:String xmlns:sys="clr-namespace:System;assembly=mscorlib">Не прочитано</sys:String>
+                                    </ComboBox.Items>
+                                </ComboBox>
+                            </StackPanel>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="IsRead" Converter="{StaticResource BoolToStatusConverter}"/>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="100">
+                        <GridViewColumn.Header>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="Оцінка від" HorizontalAlignment="Center"/>
+                                <TextBox Width="80" FontSize="12" HorizontalAlignment="Center" Margin="0,2,0,0"
+                                     Text="{Binding MinRateFilter, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="Rate" />
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
