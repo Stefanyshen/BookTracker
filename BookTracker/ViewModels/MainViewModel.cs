@@ -1,6 +1,7 @@
 ﻿using BookTracker.Commands;
 using BookTracker.Models;
 using BookTracker.Services;
+using BookTracker.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,6 +9,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace BookTracker.ViewModels
@@ -79,7 +81,19 @@ namespace BookTracker.ViewModels
         private void MarkAsRead()
         {
             if (SelectedBook != null)
-                bookService.MarkAsRead(SelectedBook);
+            {
+                var reviewWindow = new ReviewWindow()
+                {
+                    Owner = Application.Current.MainWindow,
+                };
+
+                if (reviewWindow.ShowDialog() == true && reviewWindow.SelectedRating is int rate)
+                {
+                    selectedBook.Rate = rate;
+                    SelectedBook.Review = reviewWindow.ReviewText;
+                    bookService.MarkAsRead(selectedBook);
+                }
+            }
         }
 
         private void RemoveBook()
