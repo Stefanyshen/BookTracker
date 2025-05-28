@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace BookTracker.ViewModels
 {
-    public class MainViewModel
+    public class MainViewModel : INotifyPropertyChanged
     {
         private BookService bookService = new();
         public ObservableCollection<Book> Books => bookService.Books;

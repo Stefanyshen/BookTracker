@@ -23,10 +23,5 @@ namespace BookTracker
             InitializeComponent();
             DataContext = new MainViewModel();
         }
-
-        private void LoadButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }
