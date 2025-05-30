@@ -1,4 +1,5 @@
-﻿using BookTracker.Views;
+﻿using BookTracker.Models;
+using BookTracker.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,20 @@ namespace BookTracker.Services
             bool? result = window.ShowDialog();
             if (result == true)
                 return (window.SelectedRating, window.ReviewText);
+
+            return null;
+        }
+
+        public Book? ShowAddBookDialog()
+        {
+            var window = new AddBookWindow
+            {
+                Owner = App.Current.MainWindow
+            };
+
+            bool? result = window.ShowDialog();
+            if (result == true)
+                return window.CreatedBook;
 
             return null;
         }

@@ -11,6 +11,7 @@ namespace BookTracker.Models
     {
         private string title;
         private string author;
+        //private string genre;
         private int? rate;
         private string review;
         private bool isRead;
@@ -21,6 +22,7 @@ namespace BookTracker.Models
         {
             Title = title;
             Author = author;
+            //Genre = genre;
             IsRead = false;
         }
 
@@ -42,6 +44,15 @@ namespace BookTracker.Models
                 OnPropertyChanged(nameof(Author));
             }
         }
+        //public string Genre
+        //{
+        //    get => genre;
+        //    set 
+        //    {
+        //        genre = value;
+        //        OnPropertyChanged(nameof(Genre));
+        //    }
+        //}
         public int? Rate 
         {
             get => rate;

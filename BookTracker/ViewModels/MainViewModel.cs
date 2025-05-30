@@ -15,6 +15,7 @@ namespace BookTracker.ViewModels
         private readonly BookService bookService = new();
         private string titleInput = string.Empty;
         private string authorInput = string.Empty;
+        private string genreInput = string.Empty;
         private Book? selectedBook;
 
         private string statusFilter = "Всі";
@@ -70,7 +71,7 @@ namespace BookTracker.ViewModels
             }
         }
 
-        public ICommand AddBookCommand { get; }
+        public ICommand ShowAddBookCommand { get; }
         public ICommand MarkAsReadCommand { get; }
         public ICommand RemoveBookCommand { get; }
         public ICommand SaveCommand { get; }
@@ -81,22 +82,17 @@ namespace BookTracker.ViewModels
             FilteredBooks = CollectionViewSource.GetDefaultView(bookService.Books);
             FilteredBooks.Filter = FilterBooks;
             this.dialogService = dialogService;
-            AddBookCommand = new RelayCommand(_ => AddBook());
+            ShowAddBookCommand = new RelayCommand(_ => ShowAddBook());
             MarkAsReadCommand = new RelayCommand(_ => MarkAsRead(), _ => SelectedBook != null);
             RemoveBookCommand = new RelayCommand(_ => RemoveBook(), _ => SelectedBook != null);
             SaveCommand = new RelayCommand(_ => bookService.SaveToFile(filePath));
             LoadCommand = new RelayCommand(_ => bookService.LoadFromFile(filePath));
         }
 
-        private void AddBook()
+        private void ShowAddBook()
         {
-            if (!string.IsNullOrWhiteSpace(TitleInput) && !string.IsNullOrWhiteSpace(AuthorInput))
-            {
-                var book = new Book(TitleInput, AuthorInput);
-                bookService.AddBook(book);
-                TitleInput = "";
-                AuthorInput = "";
-            }
+            var book = dialogService.ShowAddBookDialog();
+            if (book != null) bookService.AddBook(book);
         }
 
         private void MarkAsRead()
