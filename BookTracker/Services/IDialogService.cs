@@ -9,7 +9,7 @@ namespace BookTracker.Services
 {
     public interface IDialogService
     {
-        (int? rate, string? review)? ShowReviewDialog();
         Book? ShowAddBookDialog();
+        Book? ShowEditBookDialog(Book bookToEdit);
     }
 }

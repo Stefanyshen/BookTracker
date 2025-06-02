@@ -55,6 +55,7 @@ namespace BookTracker.ViewModels
         public ICommand ShowAllBooksCommand { get; }
         public ICommand ShowReadBooksCommand { get; }
         public ICommand RemoveBookCommand { get; }
+        public ICommand EditBookCommand { get; }
 
         public MainViewModel(IDialogService dialogService)
         {
@@ -62,6 +63,7 @@ namespace BookTracker.ViewModels
             this.dialogService = dialogService;
             ShowAddBookCommand = new RelayCommand(_ => ShowAddBook());
             RemoveBookCommand = new RelayCommand(_ => RemoveBook());
+            EditBookCommand = new RelayCommand(obj => EditBook(obj as Book), obj => obj is Book);
             SaveCommand = new RelayCommand(_ => bookService.SaveToFile(filePath));
             ShowAllBooksCommand = new RelayCommand(_ => ShowAllBooks());
             ShowReadBooksCommand = new RelayCommand(_ => ShowReadBooks());
@@ -109,6 +111,25 @@ namespace BookTracker.ViewModels
             // ...інші фільтри
             return true;
         }
+
+        private void EditBook(Book? bookToEdit)
+        {
+            if (bookToEdit == null) return;
+
+            var editedBook = dialogService.ShowEditBookDialog(bookToEdit);
+            if (editedBook != null)
+            {
+                // Оновлення властивостей книги
+                bookToEdit.Title = editedBook.Title;
+                bookToEdit.Author = editedBook.Author;
+                bookToEdit.Genre = editedBook.Genre;
+                bookToEdit.Status = editedBook.Status;
+                bookToEdit.Rate = editedBook.Rate;
+                bookToEdit.Review = editedBook.Review;
+                bookService.SaveToFile(filePath);
+            }
+        }
+
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged(string propertyName) =>

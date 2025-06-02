@@ -11,19 +11,6 @@ namespace BookTracker.Services
 {
     public class DialogService : IDialogService
     {
-        public (int? rate, string? review)? ShowReviewDialog()
-        {
-            var window = new ReviewWindow()
-            {
-                Owner = App.Current.MainWindow,
-            };
-
-            bool? result = window.ShowDialog();
-            if (result == true)
-                return (window.SelectedRating, window.ReviewText);
-
-            return null;
-        }
 
         public Book? ShowAddBookDialog()
         {
@@ -37,6 +24,15 @@ namespace BookTracker.Services
                 return window.CreatedBook;
 
             return null;
+        }
+        public Book? ShowEditBookDialog(Book bookToEdit)
+        {
+            var window = new EditBookWindow(bookToEdit)
+            {
+                Owner = App.Current.MainWindow
+            };
+            bool? result = window.ShowDialog();
+            return result == true ? window.EditedBook : null;
         }
     }
 }

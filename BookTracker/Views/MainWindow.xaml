@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:BookTracker" 
         xmlns:conv="clr-namespace:BookTracker.Converts"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         Title="BookTracker" Height="600" Width="1100"
         Background="{StaticResource BackgroundBrush}">
 
@@ -89,13 +90,14 @@
             <!-- Table/ListView -->
             <Border Grid.Row="2" CornerRadius="14" Background="White" Padding="12">
                 <ListView x:Name="BooksList"
-          ItemsSource="{Binding FilteredBooks}"
-          SelectedItem="{Binding SelectedBook, Mode=TwoWay}"
-          Background="Transparent"
-          BorderThickness="0"
-          Margin="0,0,0,0"
-          FontSize="16"
-          Grid.Row="2">
+                    ItemsSource="{Binding FilteredBooks}"
+                    SelectedItem="{Binding SelectedBook, Mode=TwoWay}"
+                    MouseDoubleClick="BooksList_MouseDoubleClick"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Margin="0,0,0,0"
+                    FontSize="16"
+                    Grid.Row="2">
                     <ListView.Resources>
                         <!-- Стиль для кожного рядка (карточка) -->
                         <Style TargetType="ListViewItem">
@@ -113,6 +115,7 @@
                                     <DropShadowEffect BlurRadius="4" Color="#AABBBBCC" Opacity="0.12"/>
                                 </Setter.Value>
                             </Setter>
+                            
                             <Style.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
@@ -122,6 +125,7 @@
                                     <Setter Property="Background" Value="#EDF6FF"/>
                                 </Trigger>
                             </Style.Triggers>
+                            
                         </Style>
                     </ListView.Resources>
                     <ListView.View>

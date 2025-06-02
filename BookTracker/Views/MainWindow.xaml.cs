@@ -1,4 +1,5 @@
-﻿using BookTracker.Services;
+﻿using BookTracker.Models;
+using BookTracker.Services;
 using BookTracker.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,20 @@ namespace BookTracker.Views
         {
             InitializeComponent();
             DataContext = new MainViewModel(new DialogService());
+        }
+
+        private void BooksList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (BooksList.SelectedItem is Book selectedBook)
+            {
+                // Доступ до DataContext (твоя MainViewModel)
+                var vm = DataContext as MainViewModel;
+                if (vm != null && vm.EditBookCommand.CanExecute(selectedBook))
+                {
+                    // Виклик команди з параметром
+                    vm.EditBookCommand.Execute(selectedBook);
+                }
+            }
         }
     }
 }

@@ -12,9 +12,9 @@ namespace BookTracker.Models
         private string title;
         private string author;
         private string genre;
+        private Status status;
         private int? rate;
         private string review;
-        private Status status;
 
         public Book() { } // для серіалізації
 
@@ -24,7 +24,16 @@ namespace BookTracker.Models
             Author = author;
             Genre = genre;
             Status = status;
+        }
+
+        public Book(string title, string author, string genre, Status status, int? rate, string review)
+        {
+            Title = title;
+            Author = author;
             Genre = genre;
+            Status = status;
+            Rate = rate;
+            Review = review;
         }
 
         public string Title 
@@ -59,7 +68,7 @@ namespace BookTracker.Models
             get => rate;
             set
             {
-                if (value > 0 && value <= 10)
+                if (value > 0 && value <= 10 || value is null)
                 {
                     rate = value;
                     OnPropertyChanged(nameof(Rate));
