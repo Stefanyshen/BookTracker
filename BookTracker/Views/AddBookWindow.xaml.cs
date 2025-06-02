@@ -30,25 +30,29 @@ namespace BookTracker.Views
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             // Зчитати поля (через data-binding або напряму з TextBox'ів)
-            string title = TitleInput.Text.Trim();
-            string author = AuthorInput.Text.Trim();
-            string genre = GenreInput.Text.Trim();
-            string status = (StatusComboBox.SelectedItem as ComboBoxItem)?.Content as string ?? "unread";
+            string title = TitleInput.Text;
+            string author = AuthorInput.Text;
+            string genre = GenreInput.Text;
+            Status status = SetStatus();
 
-            if (!string.IsNullOrWhiteSpace(title) && !string.IsNullOrWhiteSpace(author))
+            if (!string.IsNullOrWhiteSpace(title) || !string.IsNullOrWhiteSpace(author) || !string.IsNullOrWhiteSpace(genre))
             {
-                CreatedBook = new Book(title, author)
-                {
-                    // Якщо у Book є Genre, Status - додати їх сюди
-                    // Genre = genre,
-                    // Status = status,
-                };
+                CreatedBook = new Book(title, author, genre, status);
+
                 DialogResult = true;
             }
             else
             {
                 MessageBox.Show("Всі обов'язкові поля мають бути заповнені!", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
+
+        private Status SetStatus()
+        {
+            string? status = (StatusComboBox.SelectedItem as ComboBoxItem)?.Content as string;
+            if (status is not null && status == "Unread") return Status.Unread;
+            if (status is not null && status == "Reading") return Status.Reading;
+            return Status.Finished;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

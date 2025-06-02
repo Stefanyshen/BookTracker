@@ -82,18 +82,18 @@
                 <!-- Статус -->
                 <TextBlock Grid.Row="2" Grid.Column="1" Text="Статус" FontWeight="SemiBold" FontSize="18" Margin="0,0,0,4"/>
                 <ComboBox x:Name="StatusComboBox" Grid.Row="2" Grid.Column="1" Margin="0,24,0,8" Height="38" FontSize="16" SelectedIndex="0">
-                    <ComboBoxItem Content="unread"/>
-                    <ComboBoxItem Content="reading"/>
-                    <ComboBoxItem Content="Прочитано"/>
+                    <ComboBoxItem Content="Unread"/>
+                    <ComboBoxItem Content="Reading"/>
+                    <ComboBoxItem Content="Finished"/>
                 </ComboBox>
             </Grid>
 
             <!-- Кнопки -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0">
                 <Button Content="Скасувати" Width="140" Height="38" Margin="0,0,16,0"
-                        Style="{StaticResource PrimaryButton}" Background="#EEE" Foreground="{StaticResource TextBrush}" />
+                        Style="{StaticResource PrimaryButton}" Background="#EEE" Foreground="{StaticResource TextBrush}" Click="CancelButton_Click" />
                 <Button Content="Додати" Width="140" Height="38"
-                        Style="{StaticResource PrimaryButton}" />
+                        Style="{StaticResource PrimaryButton}" Click="AddButton_Click"/>
             </StackPanel>
         </Grid>
     </Border>

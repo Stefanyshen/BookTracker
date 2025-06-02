@@ -13,9 +13,6 @@ namespace BookTracker.ViewModels
         private readonly string filePath = "books.json";
         private readonly IDialogService dialogService;
         private readonly BookService bookService = new();
-        private string titleInput = string.Empty;
-        private string authorInput = string.Empty;
-        private string genreInput = string.Empty;
         private Book? selectedBook;
 
         private string statusFilter = "Всі";
@@ -23,24 +20,6 @@ namespace BookTracker.ViewModels
 
         public ICollectionView FilteredBooks { get; }
         public ObservableCollection<Book> Books => bookService.Books;
-        public string TitleInput
-        {
-            get => titleInput;
-            set
-            {
-                titleInput = value;
-                OnPropertyChanged(nameof(TitleInput));
-            }
-        }
-        public string AuthorInput
-        {
-            get => authorInput;
-            set
-            {
-                authorInput = value;
-                OnPropertyChanged(nameof(AuthorInput));
-            }
-        }
         public Book? SelectedBook
         {
             get => selectedBook;
@@ -72,65 +51,67 @@ namespace BookTracker.ViewModels
         }
 
         public ICommand ShowAddBookCommand { get; }
-        public ICommand MarkAsReadCommand { get; }
-        public ICommand RemoveBookCommand { get; }
         public ICommand SaveCommand { get; }
-        public ICommand LoadCommand { get; }
+        public ICommand ShowAllBooksCommand { get; }
+        public ICommand ShowReadBooksCommand { get; }
+        public ICommand RemoveBookCommand { get; }
 
         public MainViewModel(IDialogService dialogService)
         {
             FilteredBooks = CollectionViewSource.GetDefaultView(bookService.Books);
-            FilteredBooks.Filter = FilterBooks;
             this.dialogService = dialogService;
             ShowAddBookCommand = new RelayCommand(_ => ShowAddBook());
-            MarkAsReadCommand = new RelayCommand(_ => MarkAsRead(), _ => SelectedBook != null);
-            RemoveBookCommand = new RelayCommand(_ => RemoveBook(), _ => SelectedBook != null);
+            RemoveBookCommand = new RelayCommand(_ => RemoveBook());
             SaveCommand = new RelayCommand(_ => bookService.SaveToFile(filePath));
-            LoadCommand = new RelayCommand(_ => bookService.LoadFromFile(filePath));
+            ShowAllBooksCommand = new RelayCommand(_ => ShowAllBooks());
+            ShowReadBooksCommand = new RelayCommand(_ => ShowReadBooks());
+            FilteredBooks = CollectionViewSource.GetDefaultView(bookService.Books);
+            FilteredBooks.Filter = FilterBooks;
+
+            bookService.LoadFromFile(filePath);
         }
 
         private void ShowAddBook()
         {
             var book = dialogService.ShowAddBookDialog();
-            if (book != null) bookService.AddBook(book);
+            if (book != null)
+            {
+                bookService.AddBook(book);
+                bookService.SaveToFile(filePath);
+            }
         }
 
-        private void MarkAsRead()
+        public void ShowAllBooks()
         {
-            if (SelectedBook != null)
-            {
-                var result = dialogService.ShowReviewDialog();
-
-                if (result is (int rating, string review))
-                {
-                    SelectedBook.Rate = rating;
-                    SelectedBook.Review = review;
-                    bookService.MarkAsRead(SelectedBook);
-                }
-            }
+            StatusFilter = "Всі";
+            FilteredBooks.Refresh();
+        }
+        public void ShowReadBooks()
+        {
+            StatusFilter = "Прочитано";
+            FilteredBooks.Refresh();
         }
 
         private void RemoveBook()
         {
             if (SelectedBook != null)
+            {
                 bookService.RemoveBook(SelectedBook);
+                bookService.SaveToFile(filePath);
+            }
+        }
+
+        private bool FilterBooks(object obj)
+        {
+            if (obj is not Book book) return false;
+            if (StatusFilter == "Прочитано" && book.Status != Status.Finished) return false;
+            if (StatusFilter == "Всі") return true;
+            // ...інші фільтри
+            return true;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-
-        private bool FilterBooks(object obj)
-        {
-            if (obj is not Book book) 
-                return false;
-            if ((StatusFilter == "Прочитано" && !book.IsRead) || (StatusFilter == "Не прочитано" && book.IsRead))
-                return false;
-            if (minRateFilter.HasValue && (book.Rate ?? 0) < minRateFilter.Value) 
-                return false;
-
-            return true;
-        }
     }
 }

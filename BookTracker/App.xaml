@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:BookTracker"
              xmlns:conv="clr-namespace:BookTracker.Converts"
-             StartupUri="Views/MainWindow1.xaml">
+             StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
         <!-- Кольори -->
         <Color x:Key="PrimaryColor">#4A90E2</Color>

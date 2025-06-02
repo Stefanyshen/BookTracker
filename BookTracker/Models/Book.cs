@@ -11,19 +11,20 @@ namespace BookTracker.Models
     {
         private string title;
         private string author;
-        //private string genre;
+        private string genre;
         private int? rate;
         private string review;
-        private bool isRead;
+        private Status status;
 
         public Book() { } // для серіалізації
 
-        public Book(string title, string author)
+        public Book(string title, string author, string genre, Status status)
         {
             Title = title;
             Author = author;
-            //Genre = genre;
-            IsRead = false;
+            Genre = genre;
+            Status = status;
+            Genre = genre;
         }
 
         public string Title 
@@ -44,15 +45,15 @@ namespace BookTracker.Models
                 OnPropertyChanged(nameof(Author));
             }
         }
-        //public string Genre
-        //{
-        //    get => genre;
-        //    set 
-        //    {
-        //        genre = value;
-        //        OnPropertyChanged(nameof(Genre));
-        //    }
-        //}
+        public string Genre
+        {
+            get => genre;
+            set
+            {
+                genre = value;
+                OnPropertyChanged(nameof(Genre));
+            }
+        }
         public int? Rate 
         {
             get => rate;
@@ -74,13 +75,13 @@ namespace BookTracker.Models
                 OnPropertyChanged(nameof(Review));
             }
         }
-        public bool IsRead 
+        public Status Status
         {
-            get => isRead;
+            get => status;
             set
             {
-                isRead = value;
-                OnPropertyChanged(nameof(IsRead));
+                status = value;
+                OnPropertyChanged(nameof(Status));
             }
         }
 

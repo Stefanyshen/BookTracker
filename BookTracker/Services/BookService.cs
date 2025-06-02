@@ -17,10 +17,6 @@ namespace BookTracker.Services
         {
             if (Books.Contains(book)) Books.Remove(book);
         }
-        public void MarkAsRead(Book book) 
-        {
-            if (book != null) book.IsRead = true;
-        }
 
         public void SaveToFile(string path)
         {
@@ -30,7 +26,7 @@ namespace BookTracker.Services
             };
             string json = JsonSerializer.Serialize(Books.ToList(), options);
 
-            File.WriteAllText("books.json", json);
+            File.WriteAllText(path, json);
         }
         public void LoadFromFile(string path)
         {
