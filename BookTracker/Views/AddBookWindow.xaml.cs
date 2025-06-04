@@ -1,4 +1,5 @@
 ﻿using BookTracker.Models;
+using BookTracker.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,44 +21,21 @@ namespace BookTracker.Views
     /// </summary>
     public partial class AddBookWindow : Window
     {
-        public Book? CreatedBook { get; private set; }
-
         public AddBookWindow()
         {
             InitializeComponent();
-        }
 
-        private void AddButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Зчитати поля (через data-binding або напряму з TextBox'ів)
-            string title = TitleInput.Text;
-            string author = AuthorInput.Text;
-            string genre = GenreInput.Text;
-            Status status = SetStatus();
-
-            if (!string.IsNullOrWhiteSpace(title) || !string.IsNullOrWhiteSpace(author) || !string.IsNullOrWhiteSpace(genre))
+            DataContext = new AddBookViewModel();
+            var viewModel = (AddBookViewModel)DataContext;
+            viewModel.RequestClose += (_, _) =>
             {
-                CreatedBook = new Book(title, author, genre, status);
-
-                DialogResult = true;
-            }
-            else
-            {
-                MessageBox.Show("Всі обов'язкові поля мають бути заповнені!", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-
-        private Status SetStatus()
-        {
-            string? status = (StatusComboBox.SelectedItem as ComboBoxItem)?.Content as string;
-            if (status is not null && status == "Unread") return Status.Unread;
-            if (status is not null && status == "Reading") return Status.Reading;
-            return Status.Finished;
-        }
-
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = false;
+                // Повертаємо результат якщо це Submit, інакше просто закриваємо
+                if (viewModel.SubmitCommand.CanExecute(null))
+                    DialogResult = true;
+                else
+                    DialogResult = false;
+                Close();
+            };
         }
     }
 

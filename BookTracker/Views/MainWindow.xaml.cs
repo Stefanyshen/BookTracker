@@ -33,9 +33,8 @@ namespace BookTracker.Views
         {
             if (BooksList.SelectedItem is Book selectedBook)
             {
-                // Доступ до DataContext (твоя MainViewModel)
-                var vm = DataContext as MainViewModel;
-                if (vm != null && vm.EditBookCommand.CanExecute(selectedBook))
+                // Доступ до DataContext
+                if (DataContext is MainViewModel vm && vm.EditBookCommand.CanExecute(selectedBook))
                 {
                     // Виклик команди з параметром
                     vm.EditBookCommand.Execute(selectedBook);

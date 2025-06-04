@@ -1,4 +1,5 @@
 ﻿using BookTracker.Models;
+using BookTracker.ViewModels;
 using BookTracker.Views;
 using System;
 using System.Collections.Generic;
@@ -14,15 +15,14 @@ namespace BookTracker.Services
 
         public Book? ShowAddBookDialog()
         {
-            var window = new AddBookWindow
-            {
-                Owner = App.Current.MainWindow
-            };
+            var window = new AddBookWindow();
+            var viewModel = (AddBookViewModel)window.DataContext;
 
             bool? result = window.ShowDialog();
             if (result == true)
-                return window.CreatedBook;
-
+            {
+                return new Book(viewModel.Title, viewModel.Author, viewModel.Genre, viewModel.Status);
+            }
             return null;
         }
         public Book? ShowEditBookDialog(Book bookToEdit)

@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:BookTracker" 
         xmlns:conv="clr-namespace:BookTracker.Converts"
+        xmlns:helpers="clr-namespace:BookTracker.Helpers"
         Title="Додати книгу" Height="430" Width="520"
         WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
         Background="{StaticResource BackgroundBrush}">
@@ -66,34 +67,35 @@
                 </Grid.RowDefinitions>
                 <!-- Назва -->
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Назва" FontWeight="SemiBold" FontSize="18" Margin="0,0,0,4"/>
-                <TextBox x:Name="TitleInput" Grid.Row="0" Grid.Column="0" Margin="0,24,16,8" Height="38" FontSize="16"
-                         Style="{StaticResource PlaceholderTextBox}" Tag="Введіть назву..." />
+                <TextBox Grid.Row="0" Grid.Column="0" Margin="0,24,16,8" Height="38" FontSize="16"
+                         Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource PlaceholderTextBox}" Tag="Введіть назву..."/>
 
                 <!-- Автор -->
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Автор" FontWeight="SemiBold" FontSize="18" Margin="0,0,0,4"/>
-                <TextBox x:Name="AuthorInput" Grid.Row="1" Grid.Column="0" Margin="0,24,16,8" Height="38" FontSize="16"
+                <TextBox Grid.Row="1" Grid.Column="0" Margin="0,24,16,8" Height="38" FontSize="16"
+                         Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource PlaceholderTextBox}" Tag="Введіть автора..." />
 
                 <!-- Жанр -->
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Жанр" FontWeight="SemiBold" FontSize="18" Margin="0,0,0,4"/>
-                <TextBox x:Name="GenreInput" Grid.Row="2" Grid.Column="0" Margin="0,24,16,8" Height="38" FontSize="16"
+                <TextBox Grid.Row="2" Grid.Column="0" Margin="0,24,16,8" Height="38" FontSize="16"
+                         Text="{Binding Genre, UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource PlaceholderTextBox}" Tag="Введіть жанр..." />
 
                 <!-- Статус -->
                 <TextBlock Grid.Row="2" Grid.Column="1" Text="Статус" FontWeight="SemiBold" FontSize="18" Margin="0,0,0,4"/>
-                <ComboBox x:Name="StatusComboBox" Grid.Row="2" Grid.Column="1" Margin="0,24,0,8" Height="38" FontSize="16" SelectedIndex="0">
-                    <ComboBoxItem Content="Unread"/>
-                    <ComboBoxItem Content="Reading"/>
-                    <ComboBoxItem Content="Finished"/>
-                </ComboBox>
+                <ComboBox Grid.Row="2" Grid.Column="1" Margin="0,24,0,8" Height="38" FontSize="16" SelectedIndex="0"
+                          ItemsSource="{Binding Source={x:Static helpers:StatusEnumValues.All}}"
+                          SelectedItem="{Binding Status, Mode=TwoWay}"/>
             </Grid>
 
             <!-- Кнопки -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0">
                 <Button Content="Скасувати" Width="140" Height="38" Margin="0,0,16,0"
-                        Style="{StaticResource PrimaryButton}" Background="#EEE" Foreground="{StaticResource TextBrush}" Click="CancelButton_Click" />
+                        Style="{StaticResource PrimaryButton}" Background="#EEE" Foreground="{StaticResource TextBrush}" Command="{Binding CancelCommand}" />
                 <Button Content="Додати" Width="140" Height="38"
-                        Style="{StaticResource PrimaryButton}" Click="AddButton_Click"/>
+                        Style="{StaticResource PrimaryButton}" Command="{Binding SubmitCommand}"/>
             </StackPanel>
         </Grid>
     </Border>

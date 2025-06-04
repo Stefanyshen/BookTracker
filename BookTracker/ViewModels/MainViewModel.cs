@@ -14,7 +14,6 @@ namespace BookTracker.ViewModels
         private readonly IDialogService dialogService;
         private readonly BookService bookService = new();
         private Book? selectedBook;
-
         private string statusFilter = "Всі";
         private int? minRateFilter = null;
 
