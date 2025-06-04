@@ -20,19 +20,18 @@ namespace BookTracker.Services
 
             bool? result = window.ShowDialog();
             if (result == true)
-            {
                 return new Book(viewModel.Title, viewModel.Author, viewModel.Genre, viewModel.Status);
-            }
             return null;
         }
         public Book? ShowEditBookDialog(Book bookToEdit)
         {
-            var window = new EditBookWindow(bookToEdit)
-            {
-                Owner = App.Current.MainWindow
-            };
+            var window = new EditBookWindow(bookToEdit){ Owner = App.Current.MainWindow };
+            var viewModel = (EditBookViewModel)window.DataContext;
+
             bool? result = window.ShowDialog();
-            return result == true ? window.EditedBook : null;
+            if (result == true) 
+                return new Book(viewModel.Title, viewModel.Author, viewModel.Genre, viewModel.Status, viewModel.Rate, viewModel.Review);
+            return null;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BookTracker.Models;
+using BookTracker.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,38 +27,17 @@ namespace BookTracker.Views
         {
             InitializeComponent();
 
-            // Попередньо заповнюємо поля
-            TitleInput.Text = bookToEdit.Title;
-            AuthorInput.Text = bookToEdit.Author;
-            GenreInput.Text = bookToEdit.Genre;
-            StatusComboBox.SelectedItem = StatusComboBox.Items
-                .Cast<ComboBoxItem>()
-                .FirstOrDefault(i => (string)i.Content == bookToEdit.Status.ToString());
-            RateSlider.Value = bookToEdit.Rate ?? 1;
-            ReviewInput.Text = bookToEdit.Review ?? "";
-        }
-
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
-        {
-
-            // Зчитати значення з полів і створити новий/оновити Book
-            EditedBook = new Book(
-                TitleInput.Text,
-                AuthorInput.Text,
-                GenreInput.Text,
-                Enum.TryParse(StatusComboBox.Text, out Status status) ? status : Status.Unread
-            )
+            DataContext = new EditBookViewModel(bookToEdit);
+            var viewModel = (EditBookViewModel)DataContext;
+            viewModel.RequestClose += (_, _) =>
             {
-                Rate = (status is Status.Finished) ? (int)RateSlider.Value : null,
-                Review = ReviewInput.Text
+                // Повертаємо результат якщо це Submit, інакше просто закриваємо
+                if (viewModel.SubmitCommand.CanExecute(null))
+                    DialogResult = true;
+                else
+                    DialogResult = false;
+                Close();
             };
-
-            DialogResult = true;
-        }
-
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = false;
         }
     }
 }
